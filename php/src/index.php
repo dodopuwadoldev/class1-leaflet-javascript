@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaflet</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="polyline.js"></script>
+</head>
+
+<body>
+  <div class="navbar bg-base-100">
+    <a class="btn btn-ghost text-xl">My Map from Leaflet</a>
+  </div>
+  <div style="height: 50vh;" id='map'></div>
+  <button class="btn primary" onclick="getLocation()">GetMeLocation</button>
+</body>
+
+</html>
+
+<!-- <script src="polyline.js"></script> -->
+<script src="polyline.js"></script>
+<script>
+  var mymap = L.map('map').setView([14, 100.192106], 14);
+  var line = {
+    "type": "FeatureCollection",
+    "features": [{
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "coordinates": [
+          [
+            100.59958060490595,
+            13.941544323004493
+          ],
+          [
+            100.57157489866933,
+            13.864519469886702
+          ],
+          [
+            100.5217844426167,
+            13.805600259515572
+          ],
+          [
+            100.45177271088647,
+            13.76480231642833
+          ],
+          [
+            100.46729686019319,
+            13.70904960912084
+          ],
+          [
+            100.45018226190194,
+            13.696956910658372
+          ]
+        ],
+        "type": "LineString"
+      }
+    }]
+  }
+  // 
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(mymap);
+
+  var iconMarker = L.icon({
+    iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQikzl1oLBzntYoc6eYvP3WNmRv-LwNwEYI-aeyeSz0rYjfxcJfrpQM3Vthw85FTWBHElo&usqp=CAU',
+    iconSize: [20, 20]
+  })
+
+  L.marker([14, 100.192106], {
+    icon: iconMarker
+  }).addTo(mymap)
+
+  function onClickForMap(e) {
+
+    L.marker([e.latlng.lat, e.latlng.lng]).addTo(mymap)
+  }
+
+  async function showPosition(position) {
+    // navigat to google map
+    // window.location('https://maps.google.com/?q=34.059808,-118.368152')
+
+    L.Routing.control({
+      waypoints: [
+        L.latLng(14, 100.192106),
+        L.latLng(position.coords.latitude, position.coords.longitude)
+      ],
+      routeWhileDragging: false
+    }).addTo(mymap);
+
+    // const response = await fetch('http://router.project-osrm.org/route/v1/driving/14.00,100.192106;' + position.coords.latitude + ',' + position.coords.longitude + ';?overview=false')
+    // const route = await response.json()
+    // console.log('route', route)
+    // mymap.setView([position.coords.latitude, position.coords.longitude], 20)
+    // L.marker([position.coords.latitude, position.coords.longitude]).addTo(mymap)
+  }
+
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+      x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+  }
+
+  L.geoJSON(line).addTo(mymap)
+
+  mymap.on('click', onClickForMap)
+</script>
