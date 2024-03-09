@@ -9,7 +9,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" type="text/css" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
   <script src="polyline.js"></script>
 </head>
 
@@ -19,7 +18,6 @@
   </div>
   <div style="height: 50vh;" id='map'></div>
   <button class="btn primary" onclick="getLocation()">GetMeLocation</button>
-  <div id='show_latlng'></div>
 </body>
 
 </html>
@@ -28,99 +26,6 @@
 <script src="polyline.js"></script>
 <script>
   var mymap = L.map('map').setView([14, 100.192106], 14);
-  var latlngStore = []
-  var shopStore = {
-    "type": "FeatureCollection",
-    "features": [{
-        "type": "Feature",
-        "properties": {},
-        "geometry": {
-          "coordinates": [
-            102.08940333532996,
-            14.986962426969441
-          ],
-          "type": "Point"
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {},
-        "geometry": {
-          "coordinates": [
-            102.1046475104655,
-            14.98256844093953
-          ],
-          "type": "Point"
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {},
-        "geometry": {
-          "coordinates": [
-            102.08473173327286,
-            14.97033605899837
-          ],
-          "type": "Point"
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {},
-        "geometry": {
-          "coordinates": [
-            102.06948755813744,
-            14.985299848268696
-          ],
-          "type": "Point"
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {},
-        "geometry": {
-          "coordinates": [
-            102.0633407133239,
-            14.957865436254295
-          ],
-          "type": "Point"
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {},
-        "geometry": {
-          "coordinates": [
-            102.09395200049102,
-            14.959765768471058
-          ],
-          "type": "Point"
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {},
-        "geometry": {
-          "coordinates": [
-            102.08903452463971,
-            14.999312607197268
-          ],
-          "type": "Point"
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {},
-        "geometry": {
-          "coordinates": [
-            102.08496807118382,
-            14.99578572342024
-          ],
-          "type": "Point"
-        }
-      }
-    ]
-  }
   var line = {
     "type": "FeatureCollection",
     "features": [{
@@ -172,19 +77,15 @@
   }).addTo(mymap)
 
   function onClickForMap(e) {
-    latlngStore = [e.latlng.lat, e.latlng.lng]
+
     L.marker([e.latlng.lat, e.latlng.lng]).addTo(mymap)
-    console.log('first', latlngStore)
-    // [14,100]
-    document.getElementById('show_latlng').textContent = 'test'
   }
 
   async function showPosition(position) {
-    latlngStore = [position.coords.latitude, position.coords.longitude]
-    mymap.setView([position.coords.latitude, position.coords.longitude], 20)
-    L.marker([position.coords.latitude, position.coords.longitude]).addTo(mymap)
     // navigat to google map
-    // window.location.href = 'https://maps.google.com/?q=34.059808,-118.368152'
+    console.log('first', window)
+    window.location.href = 'https://maps.google.com/?q=' + position.coords.latitude+ ',' + position.coords.longitude
+    // window.open('https://maps.google.com/?q=34.059808,-118.368152', '_blank');
     // L.Routing.control({
     //   waypoints: [
     //     L.latLng(14, 100.192106),
@@ -209,31 +110,7 @@
     }
   }
 
-  var myLocation = {
-    "type": "Feature",
-    "properties": {},
-    "geometry": {
-      "coordinates": [
-        102.07739762506395,
-        14.994659633165298
-      ],
-      "type": "Point"
-    }
-  }
-
-  var radius = 2;
-  var options = {
-    steps: 10,
-    units: 'kilometers',
-    properties: {
-      foo: 'bar'
-    }
-  };
-  var circle = turf.circle(myLocation, radius, options);
-
-  var ptsWithin = turf.pointsWithinPolygon(shopStore, circle);
-  // console.log('circle', circle)
-  L.geoJSON(ptsWithin).addTo(mymap)
+  // L.geoJSON(line).addTo(mymap)
 
   mymap.on('click', onClickForMap)
 </script>
